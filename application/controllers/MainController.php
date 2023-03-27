@@ -27,7 +27,8 @@ class MainController
         require_once('content/views/index.php');
     }
 
-    public function getLista(){
+    public function getLista()
+    {
 
         // Chama o método consultarApi() com o valor do parâmetro
         $consulta = $this->consultarApi(null);
@@ -49,7 +50,7 @@ class MainController
         }
 
         $consulta = $this->consultarApi($pais);
-        if ($consulta !== null && $this->salvarConsulta($pais)) {
+        if ($consulta !== null) {
             $data = date('Y-m-d H:i:s');
             require_once('content/views/pais.php');
         } else {
@@ -88,7 +89,7 @@ class MainController
         // Consultar as APIS
         $consulta1 = $this->consultarApi($pais1);
         $consulta2 = $this->consultarApi($pais2);
-        if ($consulta1 === null || $consulta2 === null || !$this->salvarConsulta($pais1) || !$this->salvarConsulta($pais2)) {
+        if ($consulta1 === null || $consulta2 === null) {
             // Exibe uma mensagem de erro ou redireciona o usuário para outra página
             echo 'Erro: nome do país inválido ou falha ao consultar a API ou salvar no Banco de Dados.';
             return;
@@ -184,6 +185,10 @@ class MainController
         // Se os dados não estiverem no cache, consulte a API
         $api = new Api();
         $dadosApi = $api->consumirDados($pais);
+        if ($this->salvarConsulta($pais) === false) {
+            echo 'Erro ao salvar no banco de dados';
+            return;
+        }
 
         // Salve os dados no cache antes de retorná-los
         $this->salvarCache($pais, json_decode($dadosApi, true));
@@ -192,19 +197,31 @@ class MainController
 
     public function lerCache($pais)
     {
-        $cacheFile = 'application/runtime/cache' . $pais . '.json';
+        $cacheFile = 'cache/' . $pais . '.json';
         if (file_exists($cacheFile)) {
             $data = file_get_contents($cacheFile);
-            return json_decode($data, true);
+            $data = json_decode($data, true);
+            if (isset($data['expira_em']) && time() < $data['expira_em']) {
+                return $data['dados'];
+            } else {
+                // remove o arquivo de cache expirado
+                unlink($cacheFile);
+            }
         }
         return null;
     }
 
-    public function salvarCache($pais, $dados)
+
+    public function salvarCache($pais, $dados, $tempoVida = 3600) // tempo de vida padrão de 1 hora
     {
         $cacheFile = 'cache/' . $pais . '.json';
-        file_put_contents($cacheFile, json_encode($dados));
+        $data = array(
+            'dados' => $dados,
+            'expira_em' => time() + $tempoVida // define a data de expiração do cache
+        );
+        file_put_contents($cacheFile, json_encode($data));
     }
+
 
 
     // tenta salvar no banco de dados

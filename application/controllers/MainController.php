@@ -49,9 +49,9 @@ class MainController
             return;
         }
 
-        $consulta = $this->consultarApi($pais);
-        if ($consulta !== null) {
-            $data = date('Y-m-d H:i:s');
+        $dadosApi = $this->consultarApi($pais);
+        if ($dadosApi !== null) {
+            $data = $dadosApi['data'];
             require_once('content/views/pais.php');
         } else {
             require_once('content/views/erro.php');
@@ -79,25 +79,27 @@ class MainController
         $pais1 = $this->filtrarNomePais($pais1);
         $pais2 = $params['pais2'];
         $pais2 = $this->filtrarNomePais($pais2);
-
+    
         if ($pais1 === null || $pais2 === null) {
             // Exibe uma mensagem de erro ou redireciona o usuário para outra página
             echo 'Erro: nome do país inválido ou falha ao consultar a API ou salvar no Banco de Dados.';
             return;
         }
-
+    
         // Consultar as APIS
-        $consulta1 = $this->consultarApi($pais1);
-        $consulta2 = $this->consultarApi($pais2);
-        if ($consulta1 === null || $consulta2 === null) {
+        $dadosApi1 = $this->consultarApi($pais1);
+        $dadosApi2 = $this->consultarApi($pais2);
+        if ($dadosApi1 === null || $dadosApi2 === null) {
             // Exibe uma mensagem de erro ou redireciona o usuário para outra página
             echo 'Erro: nome do país inválido ou falha ao consultar a API ou salvar no Banco de Dados.';
             return;
         }
-        $data = date('Y-m-d H:i:s');
-
+        $data = $dadosApi1['data'];
+        $dados1 = $dadosApi1['dados'];
+        $dados2 = $dadosApi2['dados'];
         require_once('content/views/comparar.php');
     }
+    
 
     public function getComparar($params)
     {
@@ -165,7 +167,9 @@ class MainController
             // Verifique se os dados estão no cache
             $dados = $this->lerCache('lista');
             if ($dados !== null) {
-                return json_encode($dados);
+                $dados['data'] = date('Y-m-d H:i:s'); // atualiza a data de acesso aos dados
+                $this->salvarCache($pais, $dados['dados']); // salva os dados atualizados no cache
+                return $dados;
             }
 
             // Se os dados não estiverem no cache, consulte a API
@@ -173,13 +177,16 @@ class MainController
             $dadosApi = $api->consumirDados(null, 'https://dev.kidopilabs.com.br/exercicio/covid.php?listar_paises=1');
 
             // Salve os dados no cache antes de retorná-los
-            $this->salvarCache($pais, json_decode($dadosApi, true));
+            $this->salvarCache('lista', json_decode($dadosApi, true));
             return $dadosApi;
         }
+
         // Verifique se os dados estão no cache
         $dados = $this->lerCache($pais);
         if ($dados !== null) {
-            return json_encode($dados);
+            $dados['data'] = date('Y-m-d H:i:s'); // atualiza a data de acesso aos dados
+            $this->salvarCache($pais, $dados['dados']); // salva os dados atualizados no cache
+            return json_encode($dados['dados']);
         }
 
         // Se os dados não estiverem no cache, consulte a API
@@ -195,6 +202,7 @@ class MainController
         return $dadosApi;
     }
 
+
     public function lerCache($pais)
     {
         $cacheFile = 'cache/' . $pais . '.json';
@@ -202,7 +210,7 @@ class MainController
             $data = file_get_contents($cacheFile);
             $data = json_decode($data, true);
             if (isset($data['expira_em']) && time() < $data['expira_em']) {
-                return $data['dados'];
+                return $data;
             } else {
                 // remove o arquivo de cache expirado
                 unlink($cacheFile);
@@ -217,6 +225,7 @@ class MainController
         $cacheFile = 'cache/' . $pais . '.json';
         $data = array(
             'dados' => $dados,
+            'data' => date('Y-m-d H:i:s'), // atualiza a data de acesso aos dados
             'expira_em' => time() + $tempoVida // define a data de expiração do cache
         );
         file_put_contents($cacheFile, json_encode($data));

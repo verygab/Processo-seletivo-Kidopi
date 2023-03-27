@@ -1,0 +1,159 @@
+body {
+  font-family: Arial, sans-serif;
+  padding-top: 20px;
+}
+.title {
+  margin-bottom: 30px;
+}
+.row-main {
+  margin: 0 auto;
+  max-width: 600px;
+}
+.btn-index {
+  padding: 10px;
+}
+.btn-primary {
+  margin-bottom: 10px;
+  width: 100%;
+}
+.country-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.stats {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.9em;
+}
+.footer {
+  background-color: #f8f9fa;
+  padding: 20px 0;
+  border-top: 1px solid #e9ecef;
+}
+
+.footer-text {
+  color: #6c757d;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.footer-text a {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.footer-text a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.body-bg {
+  background-color: #f8f9fa;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.select-group {
+  display: inline-block;
+  margin-right: 20px; /* opcional para adicionar espaço entre os elementos */
+}
+
+.button-group {
+  clear: both;
+}
+/* Estilo para a tabela */
+.table {
+    font-size: 14px;
+  }
+  
+  /* Estilo para o título de cada coluna */
+  .table-title {
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase; /* deixar todas as letras maiúsculas */
+    color: #333; /* cor do texto */
+    padding: 12px 8px; /* espaçamento interno para separar do conteúdo da coluna */
+  }
+  
+  /* Estilo para as linhas listradas da tabela */
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Estilo para a linha da tabela que fica em destaque ao passar o mouse */
+  .table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+  }
+  
+  /* Estilo para o espaçamento interno das células da tabela */
+  .table td {
+    padding: 0.5rem;
+  }
+  
+  /* Estilo para o espaçamento interno das células do cabeçalho da tabela */
+  .table thead th {
+    padding: 0.5rem;
+    vertical-align: middle;
+  }
+  
+  /* Estilo para a tabela responsiva */
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  /* Estilo para o campo de pesquisa */
+  .search-input {
+    font-size: 14px;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 25vw;
+    margin-bottom: 1rem;
+    box-shadow: none;
+    margin-bottom: 15px;
+    margin-left: 2vw;
+  }
+  
+  /* Estilo para o corpo do documento */
+  body {
+    background-color: #fafafa;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Estilo para o container principal */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Estilo para o título principal da tabela */
+  .table-title {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  
+  @media (min-width: 768px) {
+    /* Estilo para a tabela responsiva em telas maiores */
+    .table-responsive {
+      padding: 0 15px;
+    }
+  }
+.navbar{
+    background-color: #fafafa!important;
+}
+a.navbar-brand.btn.btn-pill.btn-dark{
+    color: #fafafa 
+}
+.btn-dark:focus{
+    background-color: #fafafa!important;
+    color: #040404!important;
+}
+#list{
+  margin-top: 50px
+}
